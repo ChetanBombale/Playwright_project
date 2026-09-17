@@ -13,7 +13,8 @@ test  ('handle window' , async  ( {page,context}) =>
 
     context.waitForEvent('page'),
 
-    page.getByRole('link', {name: 'Open Tab'}).click()
+    page.getByRole('link', {name: 'Open Tab'}).click(),
+   page.getByRole('link', {name: 'Open Tab'}).click()
          
    ]  )
 
@@ -64,3 +65,56 @@ test (' on click multiple tab get open ', async ({page, context}) =>
         }
     }
 });
+
+
+
+test.describe('window handel' , async ()=>
+{
+test('to click on element multiple time and will open new tab ', async ({page, context})=>
+{
+
+     await page.goto('https://www.facebook.com/');
+     const title=await page.title();
+     console.log(title);
+
+     await expect(page).toHaveTitle('Facebook');
+    const [childpage1 ,childpage2]= await Promise.all([
+
+    context.waitForEvent('page'),
+    context.waitForEvent('page'),
+
+    page.getByRole('link', {name: 'Meta Pay'}).click(),
+   page.getByRole('link', {name: 'Meta Store'}).click()
+         
+   ]  )
+
+    await Promise.all([
+childpage1.waitForLoadState(),
+
+childpage2.waitForLoadState()
+
+    ])
+   
+const tab= [childpage1, childpage2];
+
+for (const a of tab)
+{
+     const title= await a.title();
+      if (title==='Meta Pay')
+      {
+        await a.bringToFront();
+        console.log(a.title);
+      }
+
+}
+
+     
+})
+
+
+
+
+
+
+
+})
